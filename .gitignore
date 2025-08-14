@@ -1,0 +1,14 @@
+# Vivado generated
+*.bit
+*.bin
+*.jou
+*.log
+*.rpt
+*.pb
+*.dcp
+*.str
+*.html
+*.xml
+.Xil/
+runs/
+ip_user_files/
