@@ -30,11 +30,12 @@ task rand_tests;
 
     repeat (15) begin
         ALUtest.randomize();
-        $display("op1 = %0d, op2 = %0d, field = %0d, result = %0d", op1, op2, field, result);
+        $display("op1 = %0d, op2 = %0d, field = %0b, result = %0d", op1, op2, field, result);
     end
 
 endtask
 
+/*
 task direct_tests;
 
     //ADD Tests
@@ -45,6 +46,7 @@ task direct_tests;
     assert(result = )
 
 endtask
+*/
 
 module tb;
 
@@ -55,6 +57,7 @@ module tb;
         bit [31:0] result;
 
         ALUinputs ALUtest = new();
+        rand_tests();
 
         ALU DUT(.op1(op1), .op2(op2), .field(field), .result(result));
 
