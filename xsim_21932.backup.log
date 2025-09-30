@@ -3,8 +3,8 @@
 # SW Build 6140274 on Thu May 22 00:12:29 MDT 2025
 # IP Build 6138677 on Thu May 22 03:10:11 MDT 2025
 # SharedData Build 6139179 on Tue May 20 17:58:58 MDT 2025
-# Start of session at: Mon Sep 29 21:25:11 2025
-# Process ID         : 31612
+# Start of session at: Tue Sep 30 11:31:25 2025
+# Process ID         : 21932
 # Current directory  : C:/Users/parkw/RV32I_CPU
 # Command line       : xsim.exe -source {xsim.dir/tb_sim/xsim_script.tcl}
 # Log file           : C:/Users/parkw/RV32I_CPU/xsim.log
@@ -19,7 +19,7 @@
 # Host memory        : 15886 MB
 # Swap memory        : 6174 MB
 # Total Virtual      : 22060 MB
-# Available Virtual  : 3815 MB
+# Available Virtual  : 7570 MB
 #-----------------------------------------------------------
 start_gui
 source xsim.dir/tb_sim/xsim_script.tcl
@@ -92,28 +92,73 @@ WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670ld:part0:1.0 avail
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/2025.1/Vivado/data/ip'.
-current_fileset: Time (s): cpu = 00:00:12 ; elapsed = 00:00:06 . Memory (MB): peak = 1536.531 ; gain = 144.910
+current_fileset: Time (s): cpu = 00:00:21 ; elapsed = 00:00:09 . Memory (MB): peak = 1544.973 ; gain = 148.781
 # xsim {tb_sim} -autoloadwcfg
 Time resolution is 1 ps
 run all
 Testbench started!
-op1 = 3448898135, op2 = 2914438194, field = 1, result = 0
-op1 = 3589114635, op2 = 4199809156, field = 1101, result = 4294967295
-op1 = 2171124187, op2 = 3353739995, field = 0, result = 1229896886
-op1 = 4164721580, op2 = 500403687, field = 100, result = 3857651275
-op1 = 4126881690, op2 = 2671527874, field = 1111, result = 3857651275
-op1 = 561029050, op2 = 393798511, field = 110, result = 930676735
-op1 = 3342469214, op2 = 225712905, field = 1001, result = 930676735
-op1 = 3035198429, op2 = 786741955, field = 1000, result = 2248456474
-op1 = 3228331332, op2 = 4129211169, field = 1, result = 0
-op1 = 3945508461, op2 = 2869442302, field = 100, result = 1076074643
-op1 = 761516805, op2 = 3950289986, field = 101, result = 0
-op1 = 4245688998, op2 = 3600831151, field = 11, result = 0
-op1 = 4221635850, op2 = 2214864308, field = 110, result = 4289015230
-op1 = 4031826575, op2 = 2165586010, field = 101, result = 0
-op1 = 2416492306, op2 = 4239738212, field = 1010, result = 0
-$finish called at time : 75 ns : File "C:/Users/parkw/RV32I_CPU/tb/units/ALU_tb.sv" Line 61
+Operation: 0
+op1 = 766954546, op2 = 1993597393, result = -1534415357
+op1 = 2052325508, op2 = 2109643757, result = -132998031
+op1 = 1206256347, op2 = -1418368992, result = -212112645
+op1 = -1513527132, op2 = -1647079961, result = 1134360203
+op1 = 1840212863, op2 = 524044226, result = -1930710207
+Operation: 1000
+op1 = 193132902, op2 = -1753685137, result = 1946818039
+op1 = -1430306519, op2 = -1921770743, result = 491464224
+op1 = -1360741693, op2 = 1110975640, result = 1823249963
+op1 = 1336688545, op2 = 1981727521, result = -645038976
+op1 = 721958654, op2 = 2123430500, result = -1401471846
+Operation: 111
+op1 = 1802806338, op2 = 1957674373, result = 1613014016
+op1 = 532149379, op2 = 1453347503, result = 379605123
+op1 = -1960011578, op2 = 67380660, result = 262276
+op1 = 18102362, op2 = 1640819573, result = 17049680
+op1 = 1708200234, op2 = 2092254564, result = 1687224608
+Operation: 110
+op1 = 1726302596, op2 = 1829113843, result = 1877430263
+op1 = 1671073513, op2 = 2098122502, result = 2141114351
+op1 = 1352703708, op2 = 407119582, result = 1491386078
+op1 = 1303342562, op2 = 356936236, result = 1575972846
+op1 = 2014953124, op2 = 1710462145, result = 2113650405
+Operation: 100
+op1 = 2067398381, op2 = 1104305313, result = 988521036
+op1 = 1934867858, op2 = 1864731014, result = 477508628
+op1 = 1830376776, op2 = -1255794125, result = -666939525
+op1 = -1195602195, op2 = 608936889, result = -1661522604
+op1 = 1783848274, op2 = -1855653630, result = -80239536
+Operation: 1
+op1 = 1243711471, op2 = 388246181, result = 0
+op1 = 927511946, op2 = 880076097, result = 0
+op1 = 210983586, op2 = 1268322279, result = 0
+op1 = 48350577, op2 = -2044091532, result = 0
+op1 = -1888149484, op2 = 287630663, result = 0
+Operation: 101
+op1 = 1715580682, op2 = -1784757368, result = 0
+op1 = 650356943, op2 = 1876123150, result = 0
+op1 = 218453977, op2 = 1157504249, result = 0
+op1 = 2094577127, op2 = 487235925, result = 0
+op1 = 1104597728, op2 = -2071181882, result = 0
+Operation: 1101
+op1 = 28093886, op2 = 1591833654, result = 0
+op1 = 630242950, op2 = 1668135420, result = 0
+op1 = 1450845992, op2 = 1696229306, result = 0
+op1 = -2076424783, op2 = -1968495039, result = -1
+op1 = 1943353114, op2 = 1629834601, result = 0
+Operation: 10
+op1 = 1700893466, op2 = 1112513722, result = 0
+op1 = 1949809749, op2 = 1496762932, result = 0
+op1 = 461793006, op2 = 188367787, result = 0
+op1 = -1883364540, op2 = 753398082, result = 1
+op1 = 452486895, op2 = 800779330, result = 1
+Operation: 11
+op1 = 401570396, op2 = 1205884978, result = 1
+op1 = 1499124395, op2 = 2006664308, result = 1
+op1 = -1886732591, op2 = -1236495896, result = 1
+op1 = 1759875452, op2 = -1560513431, result = 1
+op1 = 715439577, op2 = -1624104092, result = 1
+$finish called at time : 250 ns : File "C:/Users/parkw/RV32I_CPU/tb/units/ALU_tb.sv" Line 65
 close_sim
 INFO: [Simtcl 6-16] Simulation closed
 exit
-INFO: [Common 17-206] Exiting xsim at Mon Sep 29 21:30:22 2025...
+INFO: [Common 17-206] Exiting xsim at Tue Sep 30 11:54:32 2025...
