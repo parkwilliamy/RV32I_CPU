@@ -3,8 +3,8 @@
 # SW Build 6140274 on Thu May 22 00:12:29 MDT 2025
 # IP Build 6138677 on Thu May 22 03:10:11 MDT 2025
 # SharedData Build 6139179 on Tue May 20 17:58:58 MDT 2025
-# Start of session at: Tue Sep 30 13:00:33 2025
-# Process ID         : 21632
+# Start of session at: Tue Sep 30 11:28:18 2025
+# Process ID         : 8636
 # Current directory  : C:/Users/parkw/RV32I_CPU
 # Command line       : xsim.exe -source {xsim.dir/tb_sim/xsim_script.tcl}
 # Log file           : C:/Users/parkw/RV32I_CPU/xsim.log
@@ -19,7 +19,7 @@
 # Host memory        : 15886 MB
 # Swap memory        : 6174 MB
 # Total Virtual      : 22060 MB
-# Available Virtual  : 6732 MB
+# Available Virtual  : 7408 MB
 #-----------------------------------------------------------
 start_gui
 source xsim.dir/tb_sim/xsim_script.tcl
@@ -92,83 +92,73 @@ WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670ld:part0:1.0 avail
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/2025.1/Vivado/data/ip'.
-current_fileset: Time (s): cpu = 00:00:21 ; elapsed = 00:00:09 . Memory (MB): peak = 1538.445 ; gain = 144.688
+current_fileset: Time (s): cpu = 00:00:23 ; elapsed = 00:00:10 . Memory (MB): peak = 1559.773 ; gain = 157.613
 # xsim {tb_sim} -autoloadwcfg
 Time resolution is 1 ps
 run all
 Testbench started!
-Operation: 0
-op1 = 0, op2 = 0, result = 0
-op1 = 2147483647, op2 = 0, result = 2147483647
-op1 = 2147483647, op2 = 2147483647, result = -2
-op1 = -2147483648, op2 = -2147483648, result = 0
-op1 = 2147483647, op2 = -2147483648, result = -1
-op1 = -2147483648, op2 = 2147483647, result = -1
-Operation: 1000
-op1 = 0, op2 = 0, result = 0
-op1 = 2147483647, op2 = 0, result = 2147483647
-op1 = 2147483647, op2 = 2147483647, result = 0
-op1 = -2147483648, op2 = -2147483648, result = 0
-op1 = 2147483647, op2 = -2147483648, result = -1
-op1 = -2147483648, op2 = 2147483647, result = 1
-Operation: 111
-op1 = 0, op2 = 0, result = 0
-op1 = 2147483647, op2 = 0, result = 0
-op1 = 2147483647, op2 = 2147483647, result = 2147483647
-op1 = -2147483648, op2 = -2147483648, result = -2147483648
-op1 = 2147483647, op2 = -2147483648, result = 0
-op1 = -2147483648, op2 = 2147483647, result = 0
-Operation: 110
-op1 = 0, op2 = 0, result = 0
-op1 = 2147483647, op2 = 0, result = 2147483647
-op1 = 2147483647, op2 = 2147483647, result = 2147483647
-op1 = -2147483648, op2 = -2147483648, result = -2147483648
-op1 = 2147483647, op2 = -2147483648, result = -1
-op1 = -2147483648, op2 = 2147483647, result = -1
-Operation: 100
-op1 = 0, op2 = 0, result = 0
-op1 = 2147483647, op2 = 0, result = 2147483647
-op1 = 2147483647, op2 = 2147483647, result = 0
-op1 = -2147483648, op2 = -2147483648, result = 0
-op1 = 2147483647, op2 = -2147483648, result = -1
-op1 = -2147483648, op2 = 2147483647, result = -1
-Operation: 1
-op1 = 0, op2 = 0, result = 0
-op1 = 2147483647, op2 = 0, result = 2147483647
-op1 = 2147483647, op2 = 2147483647, result = -2147483648
-op1 = -2147483648, op2 = -2147483648, result = -2147483648
-op1 = 2147483647, op2 = -2147483648, result = 2147483647
-op1 = -2147483648, op2 = 2147483647, result = 0
-Operation: 101
-op1 = 0, op2 = 0, result = 0
-op1 = 2147483647, op2 = 0, result = 2147483647
-op1 = 2147483647, op2 = 2147483647, result = 0
-op1 = -2147483648, op2 = -2147483648, result = -2147483648
-op1 = 2147483647, op2 = -2147483648, result = 2147483647
-op1 = -2147483648, op2 = 2147483647, result = 1
-Operation: 1101
-op1 = 0, op2 = 0, result = 0
-op1 = 2147483647, op2 = 0, result = 2147483647
-op1 = 2147483647, op2 = 2147483647, result = 0
-op1 = -2147483648, op2 = -2147483648, result = -2147483648
-op1 = 2147483647, op2 = -2147483648, result = 2147483647
-op1 = -2147483648, op2 = 2147483647, result = -1
-Operation: 10
-op1 = 0, op2 = 0, result = 0
-op1 = 2147483647, op2 = 0, result = 0
-op1 = 2147483647, op2 = 2147483647, result = 0
-op1 = -2147483648, op2 = -2147483648, result = 0
-op1 = 2147483647, op2 = -2147483648, result = 0
-op1 = -2147483648, op2 = 2147483647, result = 1
 Operation: 11
-op1 = 0, op2 = 0, result = 0
-op1 = 2147483647, op2 = 0, result = 0
-op1 = 2147483647, op2 = 2147483647, result = 0
-op1 = -2147483648, op2 = -2147483648, result = 0
-op1 = 2147483647, op2 = -2147483648, result = 1
-op1 = -2147483648, op2 = 2147483647, result = 0
-$finish called at time : 300 ns : File "C:/Users/parkw/RV32I_CPU/tb/units/ALU_tb.sv" Line 102
+op1 = 766954546, op2 = 1993597393, result = 1
+op1 = 2052325508, op2 = 2109643757, result = 1
+op1 = 1206256347, op2 = -1418368992, result = 1
+op1 = -1513527132, op2 = -1647079961, result = 0
+op1 = 1840212863, op2 = 524044226, result = 0
+Operation: 10
+op1 = 193132902, op2 = -1753685137, result = 0
+op1 = -1430306519, op2 = -1921770743, result = 0
+op1 = -1360741693, op2 = 1110975640, result = 1
+op1 = 1336688545, op2 = 1981727521, result = 1
+op1 = 721958654, op2 = 2123430500, result = 1
+Operation: 1101
+op1 = 1802806338, op2 = 1957674373, result = 0
+op1 = 532149379, op2 = 1453347503, result = 0
+op1 = -1960011578, op2 = 67380660, result = -1
+op1 = 18102362, op2 = 1640819573, result = 0
+op1 = 1708200234, op2 = 2092254564, result = 0
+Operation: 101
+op1 = 1726302596, op2 = 1829113843, result = 0
+op1 = 1671073513, op2 = 2098122502, result = 0
+op1 = 1352703708, op2 = 407119582, result = 0
+op1 = 1303342562, op2 = 356936236, result = 0
+op1 = 2014953124, op2 = 1710462145, result = 0
+Operation: 1
+op1 = 2067398381, op2 = 1104305313, result = 0
+op1 = 1934867858, op2 = 1864731014, result = 0
+op1 = 1830376776, op2 = -1255794125, result = 0
+op1 = -1195602195, op2 = 608936889, result = 0
+op1 = 1783848274, op2 = -1855653630, result = 0
+Operation: 100
+op1 = 1243711471, op2 = 388246181, result = 1560653130
+op1 = 927511946, op2 = 880076097, result = 54284491
+op1 = 210983586, op2 = 1268322279, result = 1191859525
+op1 = 48350577, op2 = -2044091532, result = -2067241467
+op1 = -1888149484, op2 = 287630663, result = -1638808237
+Operation: 110
+op1 = 1715580682, op2 = -1784757368, result = -136319094
+op1 = 650356943, op2 = 1876123150, result = 1876164303
+op1 = 218453977, op2 = 1157504249, result = 1308581881
+op1 = 2094577127, op2 = 487235925, result = 2111485431
+op1 = 1104597728, op2 = -2071181882, result = -975251482
+Operation: 111
+op1 = 28093886, op2 = 1591833654, result = 10495030
+op1 = 630242950, op2 = 1668135420, result = 553695364
+op1 = 1450845992, op2 = 1696229306, result = 1142564648
+op1 = -2076424783, op2 = -1968495039, result = -2144861183
+op1 = 1943353114, op2 = 1629834601, result = 1627718920
+Operation: 1000
+op1 = 1700893466, op2 = 1112513722, result = 588379744
+op1 = 1949809749, op2 = 1496762932, result = 453046817
+op1 = 461793006, op2 = 188367787, result = 273425219
+op1 = -1883364540, op2 = 753398082, result = 1658204674
+op1 = 452486895, op2 = 800779330, result = -348292435
+Operation: 0
+op1 = 401570396, op2 = 1205884978, result = 1607455374
+op1 = 1499124395, op2 = 2006664308, result = -789178593
+op1 = -1886732591, op2 = -1236495896, result = 1171738809
+op1 = 1759875452, op2 = -1560513431, result = 199362021
+op1 = 715439577, op2 = -1624104092, result = -908664515
+$finish called at time : 250 ns : File "C:/Users/parkw/RV32I_CPU/tb/units/ALU_tb.sv" Line 65
 close_sim
 INFO: [Simtcl 6-16] Simulation closed
 exit
-INFO: [Common 17-206] Exiting xsim at Tue Sep 30 13:06:43 2025...
+INFO: [Common 17-206] Exiting xsim at Tue Sep 30 11:30:04 2025...

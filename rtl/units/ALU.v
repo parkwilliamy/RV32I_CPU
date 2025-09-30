@@ -28,9 +28,9 @@ module ALU (
             AND: result = op1&op2;
             OR: result = op1|op2;
             XOR: result = op1^op2;
-            SLL: result = op1<<op2;
-            SRL: result = op1>>op2;
-            SRA: result = $signed(op1)>>>op2;
+            SLL: result = op1<<op2[4:0];
+            SRL: result = op1>>op2[4:0];
+            SRA: result = $signed(op1)>>>op2[4:0];
             SLT: result = $signed(op1)<$signed(op2);
             SLTU: result = op1<op2;
             // default: handle exception logic later
