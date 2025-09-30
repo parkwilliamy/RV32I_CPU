@@ -1,7 +1,9 @@
+`timescale 1ns/1ps
+
 module ALU (
     input [31:0] op1, op2,
     input [3:0] field, // funct7[5] + funct3
-    output [31:0] result
+    output reg [31:0] result
 );
 
 
@@ -28,7 +30,7 @@ module ALU (
             XOR: result = op1^op2;
             SLL: result = op1<<op2;
             SRL: result = op1>>op2;
-            SRA: result = {{op2{op1[31]}}, (op1>>op2)[31-op2:0]};
+            SRA: result = $signed(op1)>>>op2;
             SLT: result = $signed(op1)<$signed(op2);
             SLTU: result = op1<op2;
             // default: handle exception logic later
