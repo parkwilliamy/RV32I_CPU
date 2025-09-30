@@ -1,0 +1,24 @@
+# Build and temp files
+*.jou
+*.log
+*.str
+*.dmp
+*.pb
+*.wdb
+
+# Vivado database
+.cache/
+.hw/
+.ip_user_files/
+.sim/
+.xil/
+.gen/
+
+# Generated bitstreams
+*.bit
+*.bin
+*.mcs
+
+# OS files
+.DS_Store
+Thumbs.db
