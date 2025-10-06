@@ -1,0 +1,1 @@
+"RegFile_tb" -s "RegFile_sim" 
