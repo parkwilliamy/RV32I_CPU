@@ -3,7 +3,7 @@
 class RegFileInputs;
 
     rand logic [4:0] rs1, rs2, rd;
-    rand logic [31:0] rd_data;
+    rand logic [31:0] rd_write_data;
 
     constraint addr_space {
         rs1 inside {[0:31]};
@@ -17,19 +17,23 @@ module RegFile_tb;
 
     bit clk, reg_write;
     logic [4:0] rs1, rs2, rd;
-    logic [31:0] rd_data;
-    logic [31:0] rs1_data, rs2_data;
+    logic [31:0] rd_write_data;
+    logic [31:0] rs1_data, rs2_data, rd_data;
 
-    RegFile DUT(.clk(clk), .reg_write(reg_write), .rs1(rs1), .rs2(rs2), .rd(rd), .rd_data(rd_data), .rs1_data(rs1_data), .rs2_data(rs2_data));
+    RegFile DUT(.clk(clk), .reg_write(reg_write), .rs1(rs1), .rs2(rs2), .rd(rd), .rd_write_data(rd_write_data), .rs1_data(rs1_data), .rs2_data(rs2_data), .rd_data(rd_data));
     RegFileInputs RegFileTest = new;
 
     always #10 clk = ~clk;
 
     initial begin
 
+        clk = 0;
+
         $display("Testbench started!");
 
         reg_write = 0;
+
+        $display("READING TESTS");
 
         repeat (5) begin //CRV Read Tests
 
@@ -41,6 +45,28 @@ module RegFile_tb;
 
         end
 
+        $display("=================================");
+
+        reg_write = 1;
+
+        $display("WRITING TESTS");
+
+        repeat (5) begin 
+
+            #15; 
+            RegFileTest.randomize();
+            rs1 = RegFileTest.rs1;
+            rs2 = RegFileTest.rs2;
+            rd = RegFileTest.rd;
+            rd_write_data = RegFileTest.rd_write_data;
+            //before write
+            $display("rs1: %0d, rs2: %0d, rd: %0d, rs1_data: %0d, rs2_data: %0d, rd_data: %0d, rd_write_data: %0d", rs1, rs2, rd, rs1_data, rs2_data, rd_data, rd_write_data);
+            #5;
+            //after write
+            $display("rs1: %0d, rs2: %0d, rd: %0d, rs1_data: %0d, rs2_data: %0d, rd_data: %0d, rd_write_data: %0d", rs1, rs2, rd, rs1_data, rs2_data, rd_data, rd_write_data);
+            $display("=================================");
+            
+        end
 
         $finish;
 

@@ -2,9 +2,5 @@
 2020.2
 May 22 2025
 00:13:55
-C:/Users/parkw/RV32I_CPU/rtl/units/ALU.v,1759247656,verilog,,,,ALU,,,,,,,,
-C:/Users/parkw/RV32I_CPU/rtl/units/ImmGen.v,1759268835,verilog,,,,ImmGen,,,,,,,,
-C:/Users/parkw/RV32I_CPU/rtl/units/RegFile.v,1759683975,verilog,,,,RegFile,,,,,,,,
-C:/Users/parkw/RV32I_CPU/tb/units/ALU_tb.sv,1759251560,systemVerilog,,,,$unit_ALU_tb_sv;tb,,,,,,,,
-C:/Users/parkw/RV32I_CPU/tb/units/ImmGen_tb.sv,1759269429,systemVerilog,,,,$unit_ImmGen_tb_sv;ImmGen_tb,,,,,,,,
-C:/Users/parkw/RV32I_CPU/tb/units/RegFile_tb.sv,1759684170,systemVerilog,,,,$unit_RegFile_tb_sv;RegFile_tb,,,,,,,,
+C:/Users/parkw/RV32I_CPU/rtl/units/RegFile.v,1759798474,verilog,,,,RegFile,,,,,,,,
+C:/Users/parkw/RV32I_CPU/tb/units/RegFile_tb.sv,1759798698,systemVerilog,,,,$unit_RegFile_tb_sv;RegFile_tb,,,,,,,,
