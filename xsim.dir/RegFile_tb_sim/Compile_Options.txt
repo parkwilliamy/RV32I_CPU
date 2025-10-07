@@ -1,0 +1,1 @@
+-debug "typical" "RegFile_tb" -s "RegFile_tb_sim" 
