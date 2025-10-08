@@ -13,6 +13,15 @@ TOP="$1"
 OUT_DIR="out"
 mkdir -p "$OUT_DIR"
 
+# Keep only 4 most recent .wdb files (5 total once the new one is written)
+MAX_FILES=4
+
+# Sort by modification time (oldest first), then delete all but newest 5
+WDB_COUNT=$(ls -1t "$OUT_DIR"/*.wdb 2>/dev/null | wc -l)
+if [ "$WDB_COUNT" -gt "$MAX_FILES" ]; then
+    ls -1t "$OUT_DIR"/*.wdb | tail -n +$((MAX_FILES + 1)) | xargs rm -f
+fi
+
 # Generate timestamp (YYYYMMDD_HHMMSS)
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 

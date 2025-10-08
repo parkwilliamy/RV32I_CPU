@@ -28,7 +28,7 @@ module RegFile (
 
     always @(posedge clk) begin
 
-        if ((rd > 0 && rd <= 31) && reg_write) reg_file[rd] <= rd_write_data; // ensure address written to is from 1-31 and reg_write is HIGH
+        if (rd > 0 && reg_write) reg_file[rd] <= rd_write_data; // ensure address written to is from 1-31 and reg_write is HIGH
         
     end
     
