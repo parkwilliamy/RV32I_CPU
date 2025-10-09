@@ -40,7 +40,6 @@ module ALU (
             SRA: result = $signed(op1)>>>op2[4:0];
             SLT: result = $signed(op1)<$signed(op2);
             SLTU: result = op1<op2;
-            // default: handle exception logic later
 
         endcase
         
