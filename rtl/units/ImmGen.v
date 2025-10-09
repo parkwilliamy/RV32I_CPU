@@ -8,10 +8,12 @@ module ImmGen (
 );
 
     reg [6:0] opcode;
+    reg [2:0] funct3;
     reg [11:0] intimm1;
     reg [19:0] intimm2;
     reg [31:0] eximm1;
     reg [31:0] eximm2;
+    reg [31:0] eximm3;
     
     localparam [6:0] // opcodes for different instruction types
         OP_R = 7'b0110011,
@@ -24,11 +26,12 @@ module ImmGen (
     always @(*) begin
 
         opcode = instruction[6:0];
+        funct3 = instruction[14:12]; //used for I-type instructions
 
         case(opcode)
 
             OP_I: begin
-                intimm1 = instruction[31:20];
+                intimm1 = (funct3 == 3'b001 || funct3 == 3'b101) ? {7'b0000000, instruction[24:20]} : instruction[31:20];
                 intimm2 = 0;
             end
             OP_S: begin
@@ -54,11 +57,20 @@ module ImmGen (
 
         endcase
 
-    imm1 = intimm1;
-    imm2 = intimm2;
-    eximm1 = {{20{intimm1[11]}}, intimm1};
-    eximm2 = {{12{intimm2[19]}}, intimm2};
-    eximm = (opcode == OP_U || opcode == OP_J) ? eximm2 : eximm1; // sign extend by 12 bits for U and J-type formats, extend by 20 bits for other formats
+        imm1 = intimm1;
+        imm2 = intimm2;
+        eximm1 = {{20{intimm1[11]}}, intimm1};
+        eximm2 = {{12{intimm2[19]}}, intimm2};
+        eximm3 = {intimm2, 12'b0};
+
+        case (opcode)
+
+            OP_J: eximm = eximm2;
+            OP_U: eximm = eximm3;
+            default: eximm = eximm1;
+
+        endcase
+    
 
     end
 
