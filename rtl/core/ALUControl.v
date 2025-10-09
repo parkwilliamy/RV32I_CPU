@@ -1,10 +1,10 @@
-`timescale 1ps/1ns
+`timescale 1ns/1ps
 
 module ALUControl(
     input [6:0] funct7,
     input [2:0] funct3,
     input [1:0] ALUOp,
-    output [3:0] field
+    output reg [3:0] field
 );
 
     always @(*) begin

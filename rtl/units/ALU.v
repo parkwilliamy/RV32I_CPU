@@ -11,7 +11,7 @@ module ALU (
 
     assign zero = (result == 0);
     assign sign = ($signed(result) < 0);
-    assign overflow = (op1[31] == op2[31]) && (result[31] != op1[31]);
+    assign overflow = (op1[31] != op2[31]) && (result[31] != op1[31]); // only detects overflow for subtraction used in branch decisions
     assign carry = intcarry;
 
     localparam [3:0] // different fields for ALU operations
@@ -28,6 +28,8 @@ module ALU (
 
     always @(*) begin
 
+        intcarry = 0;
+
         case (field) 
 
             ADD: {intcarry, result} = op1+op2;
@@ -38,8 +40,8 @@ module ALU (
             SLL: result = op1<<op2[4:0];
             SRL: result = op1>>op2[4:0];
             SRA: result = $signed(op1)>>>op2[4:0];
-            SLT: result = $signed(op1)<$signed(op2);
-            SLTU: result = op1<op2;
+            SLT: result = {31'b0, $signed(op1)<$signed(op2)};
+            SLTU: result = {31'b0, op1<op2};
 
         endcase
         
