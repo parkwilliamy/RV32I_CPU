@@ -2,10 +2,17 @@
 
 module ALU (
     input [31:0] op1, op2,
-    input [3:0] field, // funct7[5] + funct3
-    output reg [31:0] result
+    input [3:0] field, // funct7[5]/0 + funct3 (only funct7[5] for certain instructions)
+    output reg [31:0] result,
+    output zero, sign, overflow, carry
 );
 
+    reg intcarry;
+
+    assign zero = (result == 0);
+    assign sign = ($signed(result) < 0);
+    assign overflow = (op1[31] == op2[31]) && (result[31] != op1[31]);
+    assign carry = intcarry;
 
     localparam [3:0] // different fields for ALU operations
         ADD = 4'b0000,
@@ -23,8 +30,8 @@ module ALU (
 
         case (field) 
 
-            ADD: result = op1+op2;
-            SUB: result = op1-op2;
+            ADD: {intcarry, result} = op1+op2;
+            SUB: {intcarry, result} = op1-op2;
             AND: result = op1&op2;
             OR: result = op1|op2;
             XOR: result = op1^op2;

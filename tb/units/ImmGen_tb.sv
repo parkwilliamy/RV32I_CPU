@@ -46,6 +46,22 @@ module ImmGen_tb;
 
         end
 
+        $display("I-type direct tests for shift instructions");
+
+       ImmGenTest.randomize();
+       ImmGenTest.upperinst[14:12] = 3'b001;
+       instruction = {ImmGenTest.upperinst, OP_I};
+       #5;
+       $display("Instruction: %0b, imm1: %0d, imm2: %0d, eximm: %0d", instruction, imm1, imm2, eximm);
+
+       $display("=============================================");
+
+       ImmGenTest.randomize();
+       ImmGenTest.upperinst[14:12] = 3'b101;
+       instruction = {ImmGenTest.upperinst, OP_I};
+       #5;
+       $display("Instruction: %0b, imm1: %0d, imm2: %0d, eximm: %0d", instruction, imm1, imm2, eximm);
+
     $finish;
 
     end
