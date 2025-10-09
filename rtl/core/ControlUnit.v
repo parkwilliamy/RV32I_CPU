@@ -1,4 +1,4 @@
-`timescale 1ps/1ns
+`timescale 1ns/1ps
 
 module ControlUnit (
     input [6:0] opcode,
@@ -23,104 +23,64 @@ module ControlUnit (
 
     always @(*) begin
 
+        ALUOp = 0;
+        RegSrc = 0;
+        ALUSrc = 0;
+        RegWrite = 1;
+        MemRead = 0;
+        MemWrite = 0;
+        Branch = 0;
+
         case (opcode)
 
-            OP_R: begin
-                ALUOp = 0; 
-                RegSrc = 0;
-                ALUSrc = 0;
-                RegWrite = 1;
-                MemRead = 0;
-                MemWrite = 0;
-                Branch = 0;
-            end
-            OP_I: begin
-                ALUOp = 0;
-                RegSrc = 0;
-                ALUSrc = 1;
-                RegWrite = 1;
-                MemRead = 0;
-                MemWrite = 0;
-                Branch = 0;
-            end
+            // since default vals satisfy OP_R, there is no case for R-type instructions
+
+            OP_I: ALUSrc = 1;
+
             OP_I_LD: begin
-                ALUOp = 0;
-                RegSrc = 0;
+                
                 ALUSrc = 1;
-                RegWrite = 1;
                 MemRead = 1;
-                MemWrite = 0;
-                Branch = 0;
+                
             end
-            OP_I_JALR: begin // REMEMBER TO SET LSB TO 0 LATER ON
-                ALUOp = 0;
-                RegSrc = 0;
-                ALUSrc = 1;
-                RegWrite = 1;
-                MemRead = 0;
-                MemWrite = 0;
-                Branch = 0;
+
+            OP_I_JALR: begin
+
+                RegSrc = 3;
+                ALUSrc = 1; // REMEMBER TO SET LSB TO 0 LATER ON
+
             end
-            OP_I_FENCE: begin 
-                ALUOp = 0;
-                RegSrc = 0;
-                ALUSrc = 0;
-                RegWrite = 0;
-                MemRead = 0;
-                MemWrite = 0;
-                Branch = 0;
-            end
+        
+            OP_I_FENCE: RegWrite = 0;
+
             OP_S: begin
+
                 ALUOp = 1; 
-                RegSrc = 0; // doesn't matter since no write back
                 ALUSrc = 1;
                 RegWrite = 0;
-                MemRead = 0;
                 MemWrite = 1;
-                Branch = 0;
+                
             end
+
             OP_U_LUI: begin
                 ALUOp = 1;
-                RegSrc = 0;
                 ALUSrc = 1;
-                RegWrite = 1;
-                MemRead = 0;
-                MemWrite = 0;
-                Branch = 0;
             end
-            OP_U_AUIPC: begin
-                ALUOp = 0;
-                RegSrc = 2;
-                ALUSrc = 0;
-                RegWrite = 1;
-                MemRead = 0;
-                MemWrite = 0;
-                Branch = 0;
-            end
-            OP_J: begin
-                ALUOp = 0;
-                RegSrc = 3;
-                ALUSrc = 0;
-                //ALU result won't be used, control signals are being set to avoid undefined behaviour
-                RegWrite = 1;
-                MemRead = 0;
-                MemWrite = 0;
-                Branch = 0;
-            end
+
+            OP_U_AUIPC: RegSrc = 2;
+
+            OP_J: RegSrc = 3;
+
             OP_B: begin
+
                 ALUOp = 2;
-                RegSrc = 0; // doesn't matter since no write back
-                ALUSrc = 0;
                 RegWrite = 0;
-                MemRead = 0;
-                MemWrite = 0;
                 Branch = 1;
+
             end 
             
         endcase
 
-
     end
-
 
 endmodule
