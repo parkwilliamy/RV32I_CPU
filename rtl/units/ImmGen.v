@@ -2,8 +2,8 @@
 
 module ImmGen (
     input [31:0] instruction,
-    output reg [11:0] imm1,
-    output reg [19:0] imm2,
+    //output reg [11:0] imm1,
+    //output reg [19:0] imm2,
     output reg [31:0] eximm
 );
 
@@ -58,8 +58,8 @@ module ImmGen (
 
         endcase
 
-        imm1 = intimm1;
-        imm2 = intimm2;
+        //imm1 = intimm1;
+        //imm2 = intimm2;
         eximm1 = {{20{intimm1[11]}}, intimm1};
         eximm2 = {{11{intimm2[19]}}, intimm2, 1'b0};
         eximm3 = {intimm2, 12'b0};
