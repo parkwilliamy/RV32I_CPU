@@ -1,10 +1,10 @@
 `timescale 1ns/1ps
 
 module RegFile (
-    input clk, reg_write,
+    input clk, RegWrite,
     input [4:0] rs1, rs2, rd,
     input [31:0] rd_write_data,
-    output [31:0] rs1_data, rs2_data, rd_data // rd_data purely for testing, to see value before and after clock edge
+    output [31:0] rs1_data, rs2_data //rd_data // rd_data purely for testing, to see value before and after clock edge
 );
 
     reg [31:0] reg_file [31:0];
@@ -28,7 +28,7 @@ module RegFile (
 
     always @(posedge clk) begin
 
-        if (rd > 0 && reg_write) reg_file[rd] <= rd_write_data; // ensure address written to is from 1-31 and reg_write is HIGH
+        if (rd > 0 && RegWrite) reg_file[rd] <= rd_write_data; // ensure address written to is from 1-31 and RegWrite is HIGH
         
     end
     
