@@ -4,6 +4,7 @@ May 22 2025
 00:13:55
 C:/Users/parkw/RV32I_CPU/rtl/core/ALUControl.v,1760045972,verilog,,C:/Users/parkw/RV32I_CPU/rtl/core/ControlUnit.v,,ALUControl,,,,,,,,
 C:/Users/parkw/RV32I_CPU/rtl/core/ControlUnit.v,1760045967,verilog,,,,ControlUnit,,,,,,,,
+C:/Users/parkw/RV32I_CPU/rtl/core/top.v,1760122241,verilog,,,,top,,,,,,,,
 C:/Users/parkw/RV32I_CPU/rtl/units/ALU.v,1759972578,systemVerilog,C:/Users/parkw/RV32I_CPU/rtl/units/ImmGen.v;C:/Users/parkw/RV32I_CPU/rtl/units/RegFile.v;C:/Users/parkw/RV32I_CPU/tb/units/ALU_tb.sv;C:/Users/parkw/RV32I_CPU/tb/units/ImmGen_tb.sv;C:/Users/parkw/RV32I_CPU/tb/units/RegFile_tb.sv,C:/Users/parkw/RV32I_CPU/rtl/units/ImmGen.v,,$unit_ALU_v_1024009009;ALU,,,,,,,,
 C:/Users/parkw/RV32I_CPU/rtl/units/ImmGen.v,1759968725,systemVerilog,,C:/Users/parkw/RV32I_CPU/rtl/units/RegFile.v,,ImmGen,,,,,,,,
 C:/Users/parkw/RV32I_CPU/rtl/units/RegFile.v,1759944168,systemVerilog,,C:/Users/parkw/RV32I_CPU/tb/units/ALU_tb.sv,,RegFile,,,,,,,,

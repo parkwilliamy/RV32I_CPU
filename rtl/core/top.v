@@ -55,9 +55,19 @@ module top (
 
     ALU INST5 (.op1(op1), .op2(op2), .field(field), .result(result), .zero(zero), .sign(sign), .overflow(overflow), .carry(carry));
 
-    always @ (reset) begin
+    // LEDS
 
-        pc = 0;
+    assign leds[7:0] = pc;
+
+    // MISC
+
+    integer i;
+
+    initial begin // only for sim purposes
+
+        for (i = 0; i < 256; i = i+1) begin
+            imem[i] = 32'b0;
+        end
 
     end
     
@@ -66,8 +76,8 @@ module top (
         case (RegSrc) 
 
             0: rd_write_data = result;
-            1: //data_mem
-            2: //pc+imm 
+            1: rd_write_data = dmem[result];
+            2: rd_write_data = pc+eximm; 
             3: rd_write_data = pc+4;
 
         endcase
@@ -77,11 +87,14 @@ module top (
 
     always @ (posedge clk) begin
 
+        if (reset) begin
+
+            pc <= 0;
+
+        end
+
         pc <= (Branch && zero) ? pc+eximm: pc+4;
         instruction <= imem[pc];
-
-
-
 
     end
 
