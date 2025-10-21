@@ -1,0 +1,1 @@
+-debug "typical" "top_tb" -s "top_tb_sim" 

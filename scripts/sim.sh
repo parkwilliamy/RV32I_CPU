@@ -32,7 +32,7 @@ WAVE="${OUT_DIR}/${TOP}_${TIMESTAMP}.wdb"
 rm -rf xsim.dir *.log *.pb *.jou
 
 echo "==> Compiling sources..."
-xvlog -sv rtl/units/*.v tb/units/*.sv || { echo "❌ Compile failed"; exit 1; }
+xvlog -sv rtl/*.v tb/module/*.sv tb/pipe/*.sv || { echo "❌ Compile failed"; exit 1; }
 
 echo "==> Elaborating top module: $TOP"
 xelab -debug typical "$TOP" -s "${TOP}_sim" || { echo "❌ Elaboration failed"; exit 1; }

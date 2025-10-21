@@ -1,1 +1,0 @@
--debug "typical" "ALU_tb" -s "ALU_tb_sim" 
