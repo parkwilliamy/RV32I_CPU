@@ -29,9 +29,10 @@ module top (
 
     // CONTROL FIELDS/FLAGS
 
-    reg [1:0] ALUOp, RegSrc;
-    reg ALUSrc, RegWrite, MemRead, MemWrite, Branch;
-    reg [3:0] field;
+    wire [1:0] ALUOp;
+    wire [1:0] RegSrc;
+    wire ALUSrc, RegWrite, MemRead, MemWrite, Branch;
+    wire [3:0] field;
     wire zero, sign, overflow, carry;
 
     // MODULES 
@@ -39,19 +40,19 @@ module top (
     ControlUnit INST1 (.opcode(instruction[6:0]), .ALUOp(ALUOp), .RegSrc(RegSrc), .ALUSrc(ALUSrc), .RegWrite(RegWrite), .MemRead(MemRead), .MemWrite(MemWrite), .Branch(Branch));
 
     reg [31:0] rd_write_data;
-    reg [31:0] rs1_data;
-    reg [31:0] rs2_data;
+    wire [31:0] rs1_data;
+    wire [31:0] rs2_data;
     RegFile INST2 (.clk(clk), .RegWrite(RegWrite), .rs1(rs1), .rs2(rs2), .rd(rd), .rd_write_data(rd_write_data), .rs1_data(rs1_data), .rs2_data(rs2_data));
 
-    reg [31:0] eximm;
+    wire [31:0] eximm;
     ImmGen INST3 (.instruction(instruction), .eximm(eximm));
 
-    ALUControl INST4 (.funct7(funct7), .funct3(funct3), .ALUOP(ALUOp), .field(field));
+    ALUControl INST4 (.funct7(funct7), .funct3(funct3), .ALUOp(ALUOp), .field(field));
 
     wire [31:0] op1;
     wire [31:0] op2;
     assign op2 = ALUSrc ? eximm: rs2;
-    reg [31:0] result;
+    wire [31:0] result;
 
     ALU INST5 (.op1(op1), .op2(op2), .field(field), .result(result), .zero(zero), .sign(sign), .overflow(overflow), .carry(carry));
 
@@ -62,14 +63,6 @@ module top (
     // MISC
 
     integer i;
-
-    initial begin // only for sim purposes
-
-        for (i = 0; i < 256; i = i+1) begin
-            imem[i] = 32'b0;
-        end
-
-    end
     
     always @ (*) begin
 
@@ -85,7 +78,7 @@ module top (
 
     end
 
-    always @ (posedge clk) begin
+    always @ (posedge clk ) begin
 
         if (reset) begin
 
@@ -93,8 +86,12 @@ module top (
 
         end
 
-        pc <= (Branch && zero) ? pc+eximm: pc+4;
-        instruction <= imem[pc];
+        else begin
+
+            pc <= (Branch && zero) ? pc+eximm: pc+4;
+            instruction <= imem[pc];
+
+        end
 
     end
 
