@@ -3,8 +3,14 @@
 module top_tb;
 
     bit reset, clk;
-    logic [15:0] leds;
-    top DUT (.reset(reset), .clk(clk), .leds(leds));
+    top DUT (.reset(reset), .clk(clk));
+
+    wire [7:0] pc;
+    assign pc = DUT.pc;
+    wire [31:0] instruction;
+    assign instruction = DUT.instruction;
+    wire [31:0] imem [0:255];
+    assign imem = DUT.imem;
     
     // Clock generation
     initial begin
@@ -15,22 +21,19 @@ module top_tb;
     // Program loading
     initial begin
 
+        $display("Loading program...");
+        $readmemb("C:/Users/parkw/RV32I_CPU/tb/prog/bin/ADD.bin", DUT.imem); 
+        $display("Program loaded.");
+
         reset = 1;
         #15;
         reset = 0;
 
-        $display("Loading program...");
-        $readmemb("C:/Users/parkw/RV32I_CPU/tb/prog/bin/ADD.bin", DUT.imem); 
-        $display("Program loaded.");
-        
-    end
-
-    // Simulation stop condition
-    initial begin
-        #2000;
+        #20;
         $display("Simulation finished");
         $finish;
-  end
+
+    end
 
 
     
