@@ -1,25 +1,25 @@
 `timescale 1ns/1ps
 
 module top (
-    input reset, clk,
-    output [15:0] leds
+    input reset, clk
 );
 
     // MEMORY
 
-    reg [7:0] pc;
+    reg [7:0] pc = 0;
     reg [31:0] imem [0:255]; // 1KB instruction memory (make sure its word aligned)
     reg [31:0] dmem [0:255]; // 1KB data memory (also needs to be word aligned)
 
     // INSTRUCTION FIELDS
 
-    reg [31:0] instruction;
+    reg [31:0] instruction = 0;
     wire [6:0] opcode;
     wire [11:7] rd;
     wire [14:12] funct3;
     wire [19:15] rs1;
     wire [24:20] rs2;
     wire [31:25] funct7;
+    
     assign opcode = instruction[6:0];
     assign rd = instruction[11:7];
     assign funct3 = instruction[14:12];
@@ -51,18 +51,17 @@ module top (
 
     wire [31:0] op1;
     wire [31:0] op2;
-    assign op2 = ALUSrc ? eximm: rs2;
+    assign op1 = rs1_data;
+    assign op2 = ALUSrc ? eximm: rs2_data;
     wire [31:0] result;
 
     ALU INST5 (.op1(op1), .op2(op2), .field(field), .result(result), .zero(zero), .sign(sign), .overflow(overflow), .carry(carry));
 
-    // LEDS
-
-    assign leds[7:0] = pc;
-
     // MISC
 
     integer i;
+
+    // SIM SIGNALS ONLY
     
     always @ (*) begin
 
@@ -72,6 +71,7 @@ module top (
             1: rd_write_data = dmem[result];
             2: rd_write_data = pc+eximm; 
             3: rd_write_data = pc+4;
+            default: rd_write_data = 0;
 
         endcase
 
