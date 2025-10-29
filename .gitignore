@@ -16,7 +16,6 @@
 
 # Generated bitstreams
 *.bit
-*.bin
 *.mcs
 
 # OS files
