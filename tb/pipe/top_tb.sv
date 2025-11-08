@@ -2,15 +2,12 @@
 
 module top_tb;
 
-    bit reset, clk;
-    top DUT (.reset(reset), .clk(clk));
+    reg rst_n, clk; 
+    top DUT (.rst_n(rst_n), .clk(clk));
 
-    wire [7:0] pc;
-    assign pc = DUT.pc;
-    wire [31:0] instruction;
-    assign instruction = DUT.instruction;
-    wire [31:0] imem [0:255];
-    assign imem = DUT.imem;
+    reg [1000*8:1] program_file;  
+    reg [31:0] RVMODEL_DATA_BEGIN, RVMODEL_DATA_END;
+    // signature region start, end, and memory addr to check for program completion
     
     // Clock generation
     initial begin
@@ -18,26 +15,71 @@ module top_tb;
         forever #5 clk = ~clk;  // 100 MHz
     end
 
-    // Program loading
+    integer i;
+    integer fd;
+
     initial begin
 
-        $display("Loading program...");
-        $readmemb("C:/Users/parkw/RV32I_CPU/tb/prog/bin/ADD.bin", DUT.imem); 
-        $display("Program loaded.");
+        $dumpfile("sim.vcd");        // Specify the output file name
+        $dumpvars(0, top_tb);        // Dump all variables in top_tb module
+        
+        // Initialize all memory to zero first
+        for (i = 0; i < 32'h00008000; i = i + 1) begin
+            DUT.mem[i] = 8'h00;
+        end
 
-        reset = 1;
-        #15;
-        reset = 0;
+        // Argument loading
 
+        if (!$value$plusargs("PROGRAM=%s", program_file)) begin
+            $display("ERROR: No PROGRAM file specified! Use +PROGRAM=<path>");
+            $finish;
+        end
+
+        $display("Loading program from %s", program_file);
+        
+        $readmemh(program_file, DUT.mem, 0);
+
+        if (!$value$plusargs("RVMODEL_DATA_BEGIN=%h", RVMODEL_DATA_BEGIN)) begin
+            $display("No RVMODEL_DATA_BEGIN address specified! Using default address 0x00005000");
+            RVMODEL_DATA_BEGIN = 32'h00005000;
+        end
+        
+        $display("RVMODEL_DATA_BEGIN: %h", RVMODEL_DATA_BEGIN);
+
+        if (!$value$plusargs("RVMODEL_DATA_END=%h", RVMODEL_DATA_END)) begin
+            $display("No RVMODEL_DATA_END address specified! Using default address 0x00008000");
+            RVMODEL_DATA_END = 32'h00008000;
+        end
+        
+        $display("RVMODEL_DATA_END: %h", RVMODEL_DATA_END);
+
+        rst_n = 0;
         #20;
-        $display("Simulation finished");
-        $finish;
+        rst_n = 1;
 
     end
 
+    always @ (posedge clk) begin
+        if (DUT.mem[32'h00005000] == 32'h00000001) begin
 
-    
-  
+            dump_sigfile();
+            $finish; // termination condition
+
+        end
+    end
+
+    task dump_sigfile();
+        begin
+            fd = $fopen("DUT-RV32I_test.signature", "w");
+
+            for (i=RVMODEL_DATA_BEGIN; i < RVMODEL_DATA_END-4; i=i+4) begin
+                $fdisplay(fd, "%0h", {DUT.mem[i+3], DUT.mem[i+2], DUT.mem[i+1], DUT.mem[i]});
+            end
+
+            $fclose(fd);
+
+        end
+    endtask
+   
 
 endmodule
-

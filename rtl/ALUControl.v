@@ -13,12 +13,12 @@ module ALUControl(
 
             0: begin
 
-                if (funct3 == 3'b000 || funct3 == 3'b101) begin
+                if (funct3 == 3'b001 || funct3 == 3'b101) begin
                     field = {funct7[5], funct3};
                 end
 
                 else begin
-                    field = {0, funct3};
+                    field = {1'b0, funct3};
 
                 end
 

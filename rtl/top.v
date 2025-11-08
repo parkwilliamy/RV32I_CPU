@@ -1,14 +1,19 @@
 `timescale 1ns/1ps
 
 module top (
-    input reset, clk
+    input rst_n, clk
 );
 
     // MEMORY
 
-    reg [7:0] pc = 0;
-    reg [31:0] imem [0:255]; // 1KB instruction memory (make sure its word aligned)
-    reg [31:0] dmem [0:255]; // 1KB data memory (also needs to be word aligned)
+    reg [31:0] pc = 0;
+    reg [31:0] next_pc = 0;
+    reg [7:0] mem [32'h00000000:32'h00008000-1]; // 32KB RAM (make sure its word aligned)
+    reg [31:0] old_mem_byte;
+    localparam IMEM_START = 32'h00000000,
+               IMEM_END   = 32'h00005000,
+               DMEM_START = 32'h00005000,
+               DMEM_END   = 32'h00008000;
 
     // INSTRUCTION FIELDS
 
@@ -37,7 +42,7 @@ module top (
 
     // MODULES 
 
-    ControlUnit INST1 (.opcode(instruction[6:0]), .ALUOp(ALUOp), .RegSrc(RegSrc), .ALUSrc(ALUSrc), .RegWrite(RegWrite), .MemRead(MemRead), .MemWrite(MemWrite), .Branch(Branch));
+    ControlUnit INST1 (.opcode(opcode), .ALUOp(ALUOp), .RegSrc(RegSrc), .ALUSrc(ALUSrc), .RegWrite(RegWrite), .MemRead(MemRead), .MemWrite(MemWrite), .Branch(Branch));
 
     reg [31:0] rd_write_data;
     wire [31:0] rs1_data;
@@ -56,40 +61,47 @@ module top (
     wire [31:0] result;
 
     ALU INST5 (.op1(op1), .op2(op2), .field(field), .result(result), .zero(zero), .sign(sign), .overflow(overflow), .carry(carry));
-
-    // MISC
-
-    integer i;
-
-    // SIM SIGNALS ONLY
     
     always @ (*) begin
+
+        old_mem_byte = rs2_data;
 
         case (RegSrc) 
 
             0: rd_write_data = result;
-            1: rd_write_data = dmem[result];
-            2: rd_write_data = pc+eximm; 
-            3: rd_write_data = pc+4;
+            1: if (result >= DMEM_START && result < DMEM_END) rd_write_data = {mem[result+3], mem[result+2], mem[result+1], mem[result]};
+            2: rd_write_data = pc+eximm;
+            3: rd_write_data = (pc+4) % IMEM_END;
             default: rd_write_data = 0;
 
         endcase
 
+        
+
+        next_pc = (Branch && zero || RegSrc == 3) ? pc+eximm: (pc+4) % IMEM_END; // combinational block above guarantees pc+eximm and pc+4 are between IMEM_START and IMEM_END
+
 
     end
 
-    always @ (posedge clk ) begin
+    always @ (posedge clk or negedge rst_n) begin
 
-        if (reset) begin
-
+        if (!rst_n) begin
             pc <= 0;
-
+            instruction <= {mem[pc+3], mem[pc+2], mem[pc+1], mem[pc]};
         end
 
         else begin
 
-            pc <= (Branch && zero) ? pc+eximm: pc+4;
-            instruction <= imem[pc];
+            pc <= next_pc;
+            instruction <= {mem[next_pc+3], mem[next_pc+2], mem[next_pc+1], mem[next_pc]};
+            if (MemWrite == 1'b1) begin
+                if (result >= DMEM_START && result < DMEM_END) begin
+                    mem[result+3] <= old_mem_byte[31:24];  
+                    mem[result+2] <= old_mem_byte[23:16];  
+                    mem[result+1] <= old_mem_byte[15:8]; 
+                    mem[result] <= old_mem_byte[7:0];
+                end
+            end
 
         end
 

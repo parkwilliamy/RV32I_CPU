@@ -17,11 +17,14 @@ module ImmGen (
     reg [31:0] eximm4;
 
     localparam [6:0] // opcodes for different instruction types
-        OP_R = 7'b0110011,
         OP_I = 7'b0010011,
+        OP_I_LD = 7'b0000011,
+        OP_I_FENCE = 7'b0001111,
+        OP_I_JALR = 7'b1100111,
         OP_S = 7'b0100011,
         OP_B = 7'b1100011,
-        OP_U = 7'b0110111,
+        OP_U_LUI = 7'b0110111,
+        OP_U_AUIPC = 7'b0010111,
         OP_J = 7'b1101111;
 
     always @(*) begin
@@ -31,7 +34,7 @@ module ImmGen (
 
         case(opcode)
 
-            OP_I: begin
+            OP_I, OP_I_LD, OP_I_FENCE, OP_I_JALR: begin
                 intimm1 = (funct3 == 3'b001 || funct3 == 3'b101) ? {7'b0000000, instruction[24:20]} : instruction[31:20];
                 intimm2 = 0;
             end
@@ -43,7 +46,7 @@ module ImmGen (
                 intimm1 = {instruction[31], instruction[7], instruction[30:25], instruction[11:8]};
                 intimm2 = 0;
             end
-            OP_U: begin
+            OP_U_LUI, OP_U_AUIPC: begin
                 intimm1 = 0;
                 intimm2 = instruction[31:12];
             end
@@ -68,7 +71,7 @@ module ImmGen (
         case (opcode)
 
             OP_J: eximm = eximm2;
-            OP_U: eximm = eximm3;
+            OP_U_LUI, OP_U_AUIPC: eximm = eximm3;
             OP_B: eximm = eximm4;
             default: eximm = eximm1;
 
