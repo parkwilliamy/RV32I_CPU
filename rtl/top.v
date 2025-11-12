@@ -8,12 +8,12 @@ module top (
 
     reg [31:0] pc = 0;
     reg [31:0] next_pc = 0;
-    reg [7:0] mem [32'h00000000:32'h00008000-1]; // 32KB RAM (make sure its word aligned)
+    reg [7:0] mem [32'h00000000:32'h00250000-1]; // 352KB RAM (make sure its word aligned)
     reg [31:0] old_mem_byte;
     localparam IMEM_START = 32'h00000000,
-               IMEM_END   = 32'h00005000,
-               DMEM_START = 32'h00005000,
-               DMEM_END   = 32'h00008000;
+               IMEM_END   = 32'h00200000,
+               DMEM_START = 32'h00200000,
+               DMEM_END   = 32'h00250000;
 
     // INSTRUCTION FIELDS
 
@@ -76,10 +76,13 @@ module top (
 
         endcase
 
-        
-
-        next_pc = (Branch && zero || RegSrc == 3) ? pc+eximm: (pc+4) % IMEM_END; // combinational block above guarantees pc+eximm and pc+4 are between IMEM_START and IMEM_END
-
+        if (Branch && zero) next_pc = pc+eximm;
+        else if (RegSrc == 3) begin
+            if (ALUSrc == 0) next_pc = pc+eximm;
+            else if (ALUSrc == 1) next_pc = (rs1_data+eximm) & 32'hFFFFFFFE; //clear lsb to ensure alignmen
+            else next_pc = pc+4;
+        end
+        else next_pc = pc+4;
 
     end
 
@@ -95,12 +98,12 @@ module top (
             pc <= next_pc;
             instruction <= {mem[next_pc+3], mem[next_pc+2], mem[next_pc+1], mem[next_pc]};
             if (MemWrite == 1'b1) begin
-                if (result >= DMEM_START && result < DMEM_END) begin
-                    mem[result+3] <= old_mem_byte[31:24];  
-                    mem[result+2] <= old_mem_byte[23:16];  
-                    mem[result+1] <= old_mem_byte[15:8]; 
-                    mem[result] <= old_mem_byte[7:0];
-                end
+                
+                mem[result+3] <= old_mem_byte[31:24];  
+                mem[result+2] <= old_mem_byte[23:16];  
+                mem[result+1] <= old_mem_byte[15:8]; 
+                mem[result] <= old_mem_byte[7:0];
+                
             end
 
         end
