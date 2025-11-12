@@ -35,7 +35,7 @@ module ImmGen (
         case(opcode)
 
             OP_I, OP_I_LD, OP_I_FENCE, OP_I_JALR: begin
-                intimm1 = (funct3 == 3'b001 || funct3 == 3'b101) ? {7'b0000000, instruction[24:20]} : instruction[31:20];
+                intimm1 = (opcode == OP_I && (funct3 == 3'b001 || funct3 == 3'b101)) ? {7'b0000000, instruction[24:20]} : instruction[31:20];
                 intimm2 = 0;
             end
             OP_S: begin

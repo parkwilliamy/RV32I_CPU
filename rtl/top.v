@@ -14,6 +14,7 @@ module top (
                IMEM_END   = 32'h00200000,
                DMEM_START = 32'h00200000,
                DMEM_END   = 32'h00250000;
+               
 
     // INSTRUCTION FIELDS
 
@@ -52,16 +53,18 @@ module top (
     wire [31:0] eximm;
     ImmGen INST3 (.instruction(instruction), .eximm(eximm));
 
-    ALUControl INST4 (.funct7(funct7), .funct3(funct3), .ALUOp(ALUOp), .field(field));
+    ALUControl INST4 (.funct7(funct7), .funct3(funct3), .ALUOp(ALUOp), .regbit(opcode[5]), .field(field));
 
     wire [31:0] op1;
     wire [31:0] op2;
-    assign op1 = rs1_data;
+    assign op1 = (opcode == 7'b0110111) ? 0: rs1_data;
     assign op2 = ALUSrc ? eximm: rs2_data;
     wire [31:0] result;
 
     ALU INST5 (.op1(op1), .op2(op2), .field(field), .result(result), .zero(zero), .sign(sign), .overflow(overflow), .carry(carry));
     
+    reg branch_taken;
+
     always @ (*) begin
 
         old_mem_byte = rs2_data;
@@ -69,14 +72,45 @@ module top (
         case (RegSrc) 
 
             0: rd_write_data = result;
-            1: if (result >= DMEM_START && result < DMEM_END) rd_write_data = {mem[result+3], mem[result+2], mem[result+1], mem[result]};
+            1: begin
+                if (MemRead) begin
+
+                    case (funct3) 
+                    
+                        3'b000: rd_write_data = {{24{mem[result][7]}}, mem[result]}; // LB
+                        3'b001: rd_write_data = {{16{mem[result+1][7]}}, mem[result+1], mem[result]}; // LH
+                        3'b010: rd_write_data = {mem[result+3], mem[result+2], mem[result+1], mem[result]}; // LW
+                        3'b100: rd_write_data = {24'b0, mem[result]}; // LBU
+                        3'b101: rd_write_data = {16'b0, mem[result+1], mem[result]}; // LHU
+                    
+                    endcase
+
+                end
+
+                else rd_write_data = 32'b0;
+            end
             2: rd_write_data = pc+eximm;
             3: rd_write_data = (pc+4) % IMEM_END;
             default: rd_write_data = 0;
 
         endcase
 
-        if (Branch && zero) next_pc = pc+eximm;
+        if (Branch) begin
+            
+            case (funct3) 
+                
+                3'b000: branch_taken = zero; // BGE
+                3'b001: branch_taken = ~zero; // BNE
+                3'b100: branch_taken = sign^overflow; // BLT
+                3'b101: branch_taken = ~(sign^overflow); // BGE
+                3'b110: branch_taken = carry; // BLTU
+                3'b111: branch_taken = ~carry; // BGEU
+                
+            endcase
+
+
+        end
+        if (Branch && branch_taken) next_pc = pc+eximm;
         else if (RegSrc == 3) begin
             if (ALUSrc == 0) next_pc = pc+eximm;
             else if (ALUSrc == 1) next_pc = (rs1_data+eximm) & 32'hFFFFFFFE; //clear lsb to ensure alignmen
@@ -98,12 +132,15 @@ module top (
             pc <= next_pc;
             instruction <= {mem[next_pc+3], mem[next_pc+2], mem[next_pc+1], mem[next_pc]};
             if (MemWrite == 1'b1) begin
+
+                case (funct3) 
                 
-                mem[result+3] <= old_mem_byte[31:24];  
-                mem[result+2] <= old_mem_byte[23:16];  
-                mem[result+1] <= old_mem_byte[15:8]; 
-                mem[result] <= old_mem_byte[7:0];
+                    3'b000: mem[result] <= old_mem_byte[7:0]; // SB
+                    3'b001: {mem[result+1], mem[result]} <= old_mem_byte[15:0]; // SH
+                    3'b010: {mem[result+3], mem[result+2], mem[result+1], mem[result]} <= old_mem_byte; // SW
                 
+                endcase
+             
             end
 
         end

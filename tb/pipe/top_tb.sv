@@ -24,7 +24,7 @@ module top_tb (input reg rst_n, clk);
         //$dumpvars(0, top_tb);        // Dump all variables in top_tb module
         
         // Initialize all memory to zero first
-        for (i = 0; i < 32'h00065000; i = i + 1) begin
+        for (i = 0; i < 32'h00250000; i = i + 1) begin
             DUT.mem[i] = 8'h00;
         end
 
@@ -69,7 +69,7 @@ module top_tb (input reg rst_n, clk);
     end
 
     always @ (posedge clk) begin
-        if (DUT.mem[tohost] == 32'h00000001) begin
+        if (DUT.mem[tohost] == 8'h00000001) begin
 
             dump_sigfile();
             $finish; // termination condition
@@ -81,7 +81,7 @@ module top_tb (input reg rst_n, clk);
         begin
             fd = $fopen("DUT-RV32I_test.signature", "w");
 
-            for (i=RVMODEL_DATA_BEGIN; i < RVMODEL_DATA_END-4; i=i+4) begin
+            for (i=RVMODEL_DATA_BEGIN; i < RVMODEL_DATA_END; i=i+4) begin
                 $fdisplay(fd, "%08h", {DUT.mem[i+3], DUT.mem[i+2], DUT.mem[i+1], DUT.mem[i]});
             end
 

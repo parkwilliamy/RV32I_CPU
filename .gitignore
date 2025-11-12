@@ -5,6 +5,7 @@
 *.dmp
 *.pb
 *.wdb
+*.vcd
 
 # Vivado database
 .cache/

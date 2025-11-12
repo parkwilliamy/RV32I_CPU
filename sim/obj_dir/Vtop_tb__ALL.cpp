@@ -2,7 +2,10 @@
 #define VL_INCLUDE_OPT include
 #include "Vtop_tb.cpp"
 #include "Vtop_tb___024root__0.cpp"
+#include "Vtop_tb__Trace__0.cpp"
 #include "Vtop_tb__ConstPool_0.cpp"
 #include "Vtop_tb___024root__Slow.cpp"
 #include "Vtop_tb___024root__0__Slow.cpp"
 #include "Vtop_tb__Syms.cpp"
+#include "Vtop_tb__Trace__0__Slow.cpp"
+#include "Vtop_tb__TraceDecls__0__Slow.cpp"

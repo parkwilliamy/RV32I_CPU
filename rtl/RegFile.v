@@ -9,6 +9,8 @@ module RegFile (
 
     reg [31:0] reg_file [31:0];
     integer i;
+
+    wire [31:0] rd_data;
     
     assign rs1_data = reg_file[rs1];
     assign rs2_data = reg_file[rs2];

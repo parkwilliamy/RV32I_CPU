@@ -1,39 +1,48 @@
 #include "Vtop_tb.h"
 #include "verilated.h"
+#include "verilated_vcd_c.h"
 
-// Simulation time (used by $time and %t)
 vluint64_t main_time = 0;
 double sc_time_stamp() { return main_time; }
 
-// Clock tick helper
-void tick(Vtop_tb* tb) {
-    // Rising edge
+void tick(Vtop_tb* tb, VerilatedVcdC* tfp) {
     tb->clk = 1;
     tb->eval();
+    if (tfp) tfp->dump(main_time);
     main_time += 5;
 
-    // Falling edge
     tb->clk = 0;
     tb->eval();
+    if (tfp) tfp->dump(main_time);
     main_time += 5;
 }
 
 int main(int argc, char **argv) {
     Verilated::commandArgs(argc, argv);
+    Verilated::traceEverOn(true);
 
-    // Create the testbench instance
     Vtop_tb* tb = new Vtop_tb;
+    VerilatedVcdC* tfp = new VerilatedVcdC;
 
-    // Reset sequence
+    tb->trace(tfp, 99);
+    tfp->open("dump.vcd");
+
     tb->rst_n = 0;
-    for (int i = 0; i < 2; ++i) tick(tb); // 2 cycles (~20ns)
+    for (int i = 0; i < 2; ++i) tick(tb, tfp);
     tb->rst_n = 1;
 
-    // Main simulation loop
     while (!Verilated::gotFinish()) {
-        tick(tb);
+        tick(tb, tfp);
     }
 
+    // ⚡ Important: process one more eval after $finish
+    tb->eval();
+    if (tfp) tfp->dump(main_time);
+
+    tb->final();
+    tfp->close();
+
+    delete tfp;
     delete tb;
     return 0;
 }

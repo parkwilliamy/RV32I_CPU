@@ -4,6 +4,7 @@ module ALUControl(
     input [6:0] funct7,
     input [2:0] funct3,
     input [1:0] ALUOp,
+    input regbit,
     output reg [3:0] field
 );
 
@@ -13,12 +14,11 @@ module ALUControl(
 
             0: begin
 
-                if (funct3 == 3'b001 || funct3 == 3'b101) begin
-                    field = {funct7[5], funct3};
-                end
+                if (regbit) field = {funct7[5], funct3}; // R-type format
+                else begin // I-type format
 
-                else begin
-                    field = {1'b0, funct3};
+                    if (funct3 == 3'b001 || funct3 == 3'b101) field = {funct7[5], funct3}; 
+                    else field = {1'b0, funct3};
 
                 end
 

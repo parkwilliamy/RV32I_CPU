@@ -3,10 +3,10 @@
 module ControlUnit (
     input [6:0] opcode,
     output reg [1:0] ALUOp, RegSrc,
-    // for ALUOp, 0 is decode funct3 and funct7 in ALUControl, 1 is ADD, 2 is SUB
+    // for ALUOp, 0 is decode immbit, funct3 and funct7 in ALUControl, 1 is ADD, 2 is SUB
     // for RegSrc, 0 is ALU result, 1 is data memory, and 2 is PC-imm adder, 3 is next instruction address (PC+4)
     output reg ALUSrc, RegWrite, MemRead, MemWrite, Branch
-    // ALUSrc - 0 means operands are rs1 and rs2, 1 means operands are rs1 and sign extended immediate
+    // ALUSrc - 0 means operands are rs1 and rs2, 1 means second operand is sign extended immediate
 );
 
     localparam [6:0] // opcodes for different instruction types
@@ -39,8 +39,10 @@ module ControlUnit (
 
             OP_I_LD: begin
                 
+                ALUOp = 1;
                 ALUSrc = 1;
                 MemRead = 1;
+                RegSrc = 1;
                 
             end
 
