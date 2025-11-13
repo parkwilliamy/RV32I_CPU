@@ -1,6 +1,6 @@
-# PhotonCore
+# NexusCore
 
-- PhotonCore is based on the RV32I ISA
+- NexusCore is based on the RV32I ISA
 
 # Verification Outline
 
