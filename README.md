@@ -1,6 +1,6 @@
-# Helix
+# HELIX
 
-- Helix is based on the RV32I ISA
+- HELIX is based on the RV32I ISA
 
 # Verification Outline
 
