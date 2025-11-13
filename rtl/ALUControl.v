@@ -23,15 +23,12 @@ module ALUControl(
                 end
 
             end
-            1: field = 4'b0000;
+            1: field = 4'b0000; 
             2: field = 4'b1000;
 
         endcase
 
 
     end
-
-
-
 
 endmodule

@@ -3,10 +3,15 @@
 module ControlUnit (
     input [6:0] opcode,
     output reg [1:0] ALUOp, RegSrc,
-    // for ALUOp, 0 is decode immbit, funct3 and funct7 in ALUControl, 1 is ADD, 2 is SUB
-    // for RegSrc, 0 is ALU result, 1 is data memory, and 2 is PC-imm adder, 3 is next instruction address (PC+4)
-    output reg ALUSrc, RegWrite, MemRead, MemWrite, Branch
-    // ALUSrc - 0 means operands are rs1 and rs2, 1 means second operand is sign extended immediate
+    output reg ALUSrc, RegWrite, MemRead, MemWrite, Branch, Jump
+    // ALUOp: 0 -> decode regbit, funct3 and funct7 in ALUControl, 1 -> ADD, 2 -> SUB
+    // RegSrc: 0 -> ALU result, 1 -> data memory, 2 -> pc-imm adder, 3 -> next instruction address (pc+4)
+    // ALUSrc: 0 -> second operand is rs2, 1 -> second operand is sign extended immediate
+    // RegWrite: 0 -> no writeback to RegFile, 1 -> writeback to RegFile
+    // MemRead: 0 -> no read from data memory, 1 -> read from data memory into RegFile
+    // MemWrite: 0 -> no write to data memory, 1 -> write to data memory 
+    // Branch: 0 -> instruction is not B-type, 1 -> instruction is B-type
+    // Jump: 0 -> instruction is not J-type, 1 -> instruction is J-type
 );
 
     localparam [6:0] // opcodes for different instruction types
@@ -30,6 +35,7 @@ module ControlUnit (
         MemRead = 0;
         MemWrite = 0;
         Branch = 0;
+        Jump = 0;
 
         case (opcode)
 
@@ -49,7 +55,8 @@ module ControlUnit (
             OP_I_JALR: begin
 
                 RegSrc = 3;
-                ALUSrc = 1; // REMEMBER TO SET LSB TO 0 LATER ON
+                ALUSrc = 1;
+                Jump = 1;
 
             end
         
@@ -71,7 +78,10 @@ module ControlUnit (
 
             OP_U_AUIPC: RegSrc = 2;
 
-            OP_J: RegSrc = 3;
+            OP_J: begin
+                RegSrc = 3;
+                Jump = 1;
+            end
 
             OP_B: begin
 

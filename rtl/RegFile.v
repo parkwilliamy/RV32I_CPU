@@ -4,29 +4,14 @@ module RegFile (
     input clk, RegWrite,
     input [4:0] rs1, rs2, rd,
     input [31:0] rd_write_data,
-    output [31:0] rs1_data, rs2_data //rd_data // rd_data purely for testing, to see value before and after clock edge
+    output [31:0] rs1_data, rs2_data 
 );
 
     reg [31:0] reg_file [31:0];
-    integer i;
 
-    wire [31:0] rd_data;
-    
     assign rs1_data = reg_file[rs1];
     assign rs2_data = reg_file[rs2];
     assign rd_data = reg_file[rd];
-
-    initial begin
-
-        reg_file[0] <= 0; // x0 hardwired to 0
-
-        for (i = 1; i < 32; i = i+1) begin
-        
-            reg_file[i] = i;
-
-        end
-
-    end
 
     always @(posedge clk) begin
 

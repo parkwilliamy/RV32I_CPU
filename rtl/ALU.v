@@ -3,16 +3,9 @@
 module ALU (
     input [31:0] op1, op2,
     input [3:0] field, // funct7[5]/0 + funct3 (only funct7[5] for certain instructions)
-    output reg [31:0] result,
-    output zero, sign, overflow, carry
+    output reg [31:0] ALU_result,
+    output reg zero, sign, overflow, carry
 );
-
-    reg intcarry;
-
-    assign zero = (result == 0);
-    assign sign = ($signed(result) < 0);
-    assign overflow = (op1[31] != op2[31]) && (result[31] != op1[31]); // only detects overflow for subtraction used in branch decisions
-    assign carry = intcarry;
 
     localparam [3:0] // different fields for ALU operations
         ADD = 4'b0000,
@@ -28,20 +21,22 @@ module ALU (
 
     always @(*) begin
 
-        intcarry = 0;
+        zero = (ALU_result == 0);
+        sign = ($signed(ALU_result) < 0);
+        overflow = (op1[31] != op2[31]) && (ALU_result[31] != op1[31]); // detects overflow for subtraction used in branch decisions
 
         case (field) 
 
-            ADD: {intcarry, result} = op1+op2;
-            SUB: {intcarry, result} = op1-op2;
-            AND: result = op1&op2;
-            OR: result = op1|op2;
-            XOR: result = op1^op2;
-            SLL: result = op1<<op2[4:0];
-            SRL: result = op1>>op2[4:0];
-            SRA: result = $signed(op1)>>>op2[4:0];
-            SLT: result = {31'b0, $signed(op1)<$signed(op2)};
-            SLTU: result = {31'b0, op1<op2};
+            ADD: {carry, ALU_result} = op1+op2;
+            SUB: {carry, ALU_result} = op1-op2;
+            AND: ALU_result = op1&op2;
+            OR: ALU_result = op1|op2;
+            XOR: ALU_result = op1^op2;
+            SLL: ALU_result = op1<<op2[4:0];
+            SRL: ALU_result = op1>>op2[4:0];
+            SRA: ALU_result = $signed(op1)>>>op2[4:0];
+            SLT: ALU_result = {31'b0, $signed(op1)<$signed(op2)};
+            SLTU: ALU_result = {31'b0, op1<op2};
 
         endcase
         
