@@ -1,6 +1,6 @@
-# NexusCore
+# Helix
 
-- NexusCore is based on the RV32I ISA
+- Helix is based on the RV32I ISA
 
 # Verification Outline
 
