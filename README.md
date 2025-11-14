@@ -1,7 +1,7 @@
-# HELIX 
+# RISClet
 
-- HELIX (Hardware Execution Layer for Integer Execution) is 32-bit processor based on the RISC-V architecture
-- The goal is to implement HELIX on the Xilinx Artix-7 FPGA
+- RISClet is 32-bit processor based on the RISC-V architecture
+- The goal is to implement RISClet on the Xilinx Artix-7 FPGA
 - Optimizing performance through pipelining, hazard detection, and branch prediction
 
 # Verification Outline
