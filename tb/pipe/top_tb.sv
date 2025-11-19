@@ -22,11 +22,6 @@ module top_tb (input reg rst_n, clk);
 
         //$dumpfile("sim.vcd");        // Specify the output file name
         //$dumpvars(0, top_tb);        // Dump all variables in top_tb module
-        
-        // Initialize all memory to zero first
-        for (i = 0; i < 32'h00250000; i = i + 1) begin
-            DUT.mem[i] = 8'h00;
-        end
 
         // Argument loading
 
@@ -37,7 +32,7 @@ module top_tb (input reg rst_n, clk);
 
         $display("Loading program from %s", program_file);
         
-        $readmemh(program_file, DUT.mem, 0);
+        $readmemh(program_file, DUT.BRAM.mem, 0);
 
         if (!$value$plusargs("begin_signature=%h", RVMODEL_DATA_BEGIN)) begin
             $display("No RVMODEL_DATA_BEGIN address specified! Using default address 0x00005000");
@@ -69,7 +64,7 @@ module top_tb (input reg rst_n, clk);
     end
 
     always @ (posedge clk) begin
-        if (DUT.mem[tohost] == 8'h00000001) begin
+        if (DUT.BRAM.mem[tohost/4] == 8'h00000001) begin
 
             dump_sigfile();
             $finish; // termination condition
@@ -82,7 +77,7 @@ module top_tb (input reg rst_n, clk);
             fd = $fopen("DUT-RV32I_test.signature", "w");
 
             for (i=RVMODEL_DATA_BEGIN; i < RVMODEL_DATA_END; i=i+4) begin
-                $fdisplay(fd, "%08h", {DUT.mem[i+3], DUT.mem[i+2], DUT.mem[i+1], DUT.mem[i]});
+                $fdisplay(fd, "%08h", (DUT.BRAM.mem[i/4]));
             end
 
             $fclose(fd);
