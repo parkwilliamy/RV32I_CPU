@@ -6,8 +6,9 @@ module top (
 
     // ************************************* MEMORY ************************************* 
 
-    wire [3:0] wea, web;
-    reg [31:0] addra, addrb, dia, dib, doa, dob; // Port A is IMEM, Port B is DMEM
+    reg [3:0] wea, web;
+    wire [31:0] addra, addrb, doa, dob; // Port A is IMEM, Port B is DMEM
+    reg [31:0] dia, dib;
 
     // byte addressable memory that uses the nearest word as an index
     BRAM INST1 ( 
@@ -24,18 +25,19 @@ module top (
 
     // ******************************** PIPELINE REGISTERS ******************************
 
-    reg [63:0] IF/ID; // IF/ID[63:32] = pc, IF/ID[31:0] = instruction
-    reg [149:0] ID/EX; // ID/EX[149:146] = field, ID/EX[145:143] = funct3, ID/EX[142:141] = ALUOp, ID/EX[140:139] = RegSrc, ID/EX[138] = ALUSrc, ID/EX[137] = RegWrite, ID/EX[136] = MemRead, ID/EX[135] = MemWrite, ID/EX[134] = Branch, ID/EX[133] = Jump, ID/EX[132:101] = pc, ID/EX[100:69] = rs1_data, ID/EX[68:37] = rs2_data, ID/EX[36:5] = eximm, ID/EX[4:0] = rd
-    reg [140:0] EX/MEM; // EX/MEM[140:109] = pc, EX/MEM[108:106] = funct3, EX/MEM[105:104] = RegSrc, EX/MEM[103] = RegWrite, EX/MEM[102] = MemRead, EX/MEM[101] = MemWrite, EX/MEM[100:69] = pc+eximm, EX/MEM[68:37] = rs2_data, EX/MEM[36:5] = ALU_result, EX/MEM[4:0] = rd
-    reg [139:0] MEM/WB; // MEM/WB[135:104] = pc, MEM/WB[103:72] = pc+eximm, MEM/WB[71:70] = RegSrc, MEM/WB[69] = RegWrite, MEM/WB[68:37] = ALU_result, MEM/WB[36:5] = DMEM_result, MEM/WB[4:0] = rd
+    reg [63:0] IF_ID; 
+    reg [149:0] ID_EX; 
+    reg [140:0] EX_MEM; 
+    reg [135:0] MEM_WB; 
 
     // *********************************** MODULES **************************************
                
     // =============================== INSTRUCTION FETCH ================================
 
-    reg [31:0] IF_instruction;
-    wire [31:0] IF_pc;
+    wire [31:0] IF_instruction;
+    reg [31:0] IF_pc;
 
+    assign addra = IF_pc;
     assign IF_instruction = doa;
 
     // =============================== INSTRUCTION DECODE ===============================
@@ -49,7 +51,7 @@ module top (
     wire [24:20] ID_rs2;
     wire [31:25] ID_funct7;
     
-    assign {ID_PC, ID_instruction} = IF/ID;
+    assign {ID_PC, ID_instruction} = IF_ID;
     assign ID_opcode = ID_instruction[6:0];
     assign ID_rd = ID_instruction[11:7];
     assign ID_funct3 = ID_instruction[14:12];
@@ -121,21 +123,23 @@ module top (
     wire [31:0] EX_op2;
 
     assign {
-        EX_field,
-        EX_funct3, 
+        EX_pc,
+        EX_funct3,
+        EX_field, 
         EX_ALUOp, 
         EX_RegSrc, 
+        EX_ALUSrc,
         EX_RegWrite, 
         EX_MemRead, 
         EX_MemWrite, 
         EX_Branch, 
         EX_Jump,
-        EX_pc,
         EX_rs1_data,
         EX_rs2_data,
         EX_eximm,
         EX_rd
-    } = ID/EX;
+    } = ID_EX;
+
 
     assign EX_op1 = (EX_ALUOp == 1 && EX_ALUSrc == 1) ? 0: EX_rs1_data;
     assign EX_op2 = EX_ALUSrc ? EX_eximm: EX_rs2_data;
@@ -178,23 +182,24 @@ module top (
     
     wire [31:0] MEM_pc_eximm;
     wire [31:0 ]MEM_rs2_data;
-    wire [31:0] MEM_alu_result;
+    wire [31:0] MEM_ALU_result;
     wire [4:0] MEM_rd;
 
     assign {
         MEM_pc,
+        MEM_pc_eximm,
         MEM_funct3, 
         MEM_RegSrc, 
         MEM_RegWrite, 
         MEM_MemRead, 
         MEM_MemWrite, 
-        MEM_pc_eximm,
         MEM_rs2_data,
-        MEM_alu_result,
+        MEM_ALU_result,
         MEM_rd
-    } = EX/MEM;
+    } = EX_MEM;
 
-    assign addrb = MEM_alu_result;
+
+    assign addrb = MEM_ALU_result;
 
     wire [1:0] MEM_byte_offset;
     assign MEM_byte_offset = addrb % 4;
@@ -226,11 +231,10 @@ module top (
         WB_ALU_result,
         WB_DMEM_result, // not all of the word is used for non LW instructions
         WB_rd
-    } = MEM/WB;
+    } = MEM_WB;
 
     reg [31:0] WB_rd_write_data;
     reg [31:0] next_pc;
-    reg [31:0] MEM_DMEM_word;
 
     always @ (posedge clk or negedge rst_n) begin
 
@@ -241,10 +245,10 @@ module top (
         else begin
 
             IF_pc <= next_pc; 
-            IF/ID <= {IF_pc,IF_instruction};
-            ID/EX <= {ID_field, ID_funct3, ID_ALUOp, ID_RegSrc, ID_ALUSrc, ID_RegWrite, ID_MemRead, ID_MemWrite, ID_Branch, ID_Jump, ID_pc, ID_rs1_data, ID_rs2_data, ID_eximm, ID_rd};
-            EX/MEM <= {EX_pc, EX_funct3, EX_RegSrc, EX_RegWrite, EX_MemRead, EX_MemWrite, EX_pc_eximm, EX_rs2_data, EX_ALU_result, EX_rd};
-            MEM/WB <= {MEM_pc, MEM_pc_eximm, MEM_RegSrc, MEM_RegWrite, MEM_ALU_result, MEM_DMEM_result, MEM_rd};
+            IF_ID <= {IF_pc,IF_instruction};
+            ID_EX <= {ID_pc, ID_funct3, ID_field, ID_ALUOp, ID_RegSrc, ID_ALUSrc, ID_RegWrite, ID_MemRead, ID_MemWrite, ID_Branch, ID_Jump, ID_rs1_data, ID_rs2_data, ID_eximm, ID_rd};
+            EX_MEM <= {EX_pc, EX_pc_eximm, EX_funct3, EX_RegSrc, EX_RegWrite, EX_MemRead, EX_MemWrite, EX_rs2_data, EX_ALU_result, EX_rd};
+            MEM_WB <= {MEM_pc, MEM_pc_eximm, MEM_RegSrc, MEM_RegWrite, MEM_ALU_result, MEM_DMEM_result, MEM_rd};
 
         end
 
@@ -255,11 +259,9 @@ module top (
     // =============================== INSTRUCTION FETCH ================================
 
     always @ (*) begin
-
-        addra = IF_pc;
         
         // Branch Instruction Logic
-        if (EX_Branch && EX_branch_taken) next_pc = IF_pc+eximm;
+        if (EX_Branch && EX_branch_taken) next_pc = IF_pc+EX_eximm;
         // Jump Instruction Logic
         else if (EX_Jump) begin 
             if (EX_ALUSrc == 0) next_pc = IF_pc+EX_eximm; // JAL
@@ -327,7 +329,7 @@ module top (
 
     always @ (*) begin
 
-        case (RegSrc) 
+        case (WB_RegSrc) 
 
             0: WB_rd_write_data = WB_ALU_result;
             1: WB_rd_write_data = WB_DMEM_result;

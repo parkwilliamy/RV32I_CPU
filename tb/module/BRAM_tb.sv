@@ -31,7 +31,7 @@ module BRAM_tb;
 
     BRAMInputs BRAMTest = new;
 
-    always #10 clk = ~clk;
+    //always #10 clk = ~clk;
 
     initial begin
 

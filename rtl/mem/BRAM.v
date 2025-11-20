@@ -5,12 +5,12 @@ module BRAM (
     input [3:0] wea,
     input [3:0] web,
     // byte addresses
-    input addra, 
-    input addrb,
-    input dia,
-    input dib,
-    output doa,
-    output dob
+    input [31:0] addra, 
+    input [31:0] addrb,
+    input [31:0] dia,
+    input [31:0] dib,
+    output reg [31:0] doa,
+    output reg [31:0] dob
 );
 
     /* Simulation Memory (2 MB)
