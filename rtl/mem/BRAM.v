@@ -34,7 +34,7 @@ module BRAM (
 
     initial begin
 
-        for (i = 0; i < DMEM_END/4; i = i+1) begin
+        for (i = 0; i < DMEM_END/4-1; i = i+1) begin
             mem[i] = i;
         end
 

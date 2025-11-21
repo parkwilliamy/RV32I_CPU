@@ -67,6 +67,10 @@ module top (
     wire [31:0] ID_rs1_data;
     wire [31:0] ID_rs2_data;
 
+    wire WB_RegWrite;
+    wire [4:0] WB_rd;
+    reg [31:0] WB_rd_write_data;
+
     ControlUnit INST2 (
         .opcode(ID_opcode), 
         .ALUOp(ID_ALUOp), 
@@ -198,18 +202,28 @@ module top (
         MEM_rd
     } = EX_MEM;
 
-
     assign addrb = MEM_ALU_result;
 
     wire [1:0] MEM_byte_offset;
     assign MEM_byte_offset = addrb % 4;
 
-    wire [31:0] MEM_DMEM_word; // nearest word for a given byte address
+    wire [31:0] MEM_DMEM_word; // data at the nearest word aligned address for a given byte address
     assign MEM_DMEM_word = dob; 
 
-    reg [31:0] MEM_DMEM_shifted_word; // for loads
-
     reg [31:0] MEM_DMEM_result; // properly formatted data for load instructions
+
+    LSU INST8 (
+        .addrb(addrb),
+        .MemWrite(MEM_MemWrite),
+        .MemRead(MEM_MemRead),
+        .DMEM_word(MEM_DMEM_word),
+        .rs2_data(MEM_rs2_data),
+        .byte_offset(MEM_byte_offset),
+        .funct3(MEM_funct3),
+        .web(web),
+        .dib(dib),
+        .DMEM_result(MEM_DMEM_result)
+    );
 
 
     // =============================== REGFILE WRITE BACK ===============================
@@ -217,11 +231,8 @@ module top (
     wire [31:0] WB_pc;
     wire [31:0] WB_pc_eximm;
     wire [1:0] WB_RegSrc;
-    wire WB_RegWrite;
-
     wire [31:0] WB_ALU_result;
     wire [31:0] WB_DMEM_result;
-    wire [4:0] WB_rd;
 
     assign {
         WB_pc,
@@ -233,7 +244,6 @@ module top (
         WB_rd
     } = MEM_WB;
 
-    reg [31:0] WB_rd_write_data;
     reg [31:0] next_pc;
 
     always @ (posedge clk or negedge rst_n) begin
@@ -258,71 +268,16 @@ module top (
 
     // =============================== INSTRUCTION FETCH ================================
 
-    always @ (*) begin
-        
-        // Branch Instruction Logic
-        if (EX_Branch && EX_branch_taken) next_pc = IF_pc+EX_eximm;
-        // Jump Instruction Logic
-        else if (EX_Jump) begin 
-            if (EX_ALUSrc == 0) next_pc = IF_pc+EX_eximm; // JAL
-            else next_pc = (EX_rs1_data+EX_eximm) & 32'hFFFFFFFE; // JALR, clear lsb to ensure word alignment
-        end
-        else next_pc = IF_pc+4;
-
-    end
-
-
-    // ================================== MEMORY WRITE ==================================
-
-    always @ (*) begin
-
-        MEM_DMEM_shifted_word = MEM_DMEM_word >> 8*MEM_byte_offset;
-
-        if (MEM_MemWrite) begin
-
-                case (MEM_funct3) 
-
-                    3'b000: begin // SB
-                        
-                        web = (4'b0001 << MEM_byte_offset);
-                        dib = {24'b0, MEM_rs2_data[7:0]};
-
-                    end
-
-                    3'b001: begin // SH
-
-                        web = (4'b0011 << MEM_byte_offset);
-                        dib = {16'b0, MEM_rs2_data[15:0]};
-                    
-                    end
-
-                    3'b010: begin // SW
-
-                        web = 4'b1111;
-                        dib = MEM_rs2_data;
-
-                    end
-                
-                endcase
-             
-        end
-
-        else if (MEM_MemRead) begin
-
-            case (MEM_funct3) 
-            
-                3'b000: MEM_DMEM_result = {{24{MEM_DMEM_word[7]}}, MEM_DMEM_shifted_word[7:0]}; // LB
-                3'b001: MEM_DMEM_result = {{16{MEM_DMEM_word[15]}}, MEM_DMEM_shifted_word[15:0]}; // LH
-                3'b010: MEM_DMEM_result = MEM_DMEM_shifted_word; // LW
-                3'b100: MEM_DMEM_result = {24'b0, MEM_DMEM_shifted_word[7:0]}; // LBU
-                3'b101: MEM_DMEM_result = {16'b0, MEM_DMEM_shifted_word[15:0]}; // LHU
-
-            endcase
-
-        end
-
-
-    end
+    Fetch INST9 (
+        .Branch(EX_Branch),
+        .branch_taken(EX_branch_taken),
+        .Jump(EX_Jump),
+        .ALUSrc(EX_ALUSrc),
+        .pc(IF_pc),
+        .eximm(EX_eximm),
+        .rs1_data(EX_rs1_data),
+        .next_pc(next_pc)
+    );
 
 
     // =============================== REGFILE WRITE BACK ===============================

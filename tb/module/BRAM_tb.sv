@@ -9,6 +9,11 @@ class BRAMInputs;
         addrb inside {[0:32'h00008000]};
     }
 
+    constraint addr_alignment {
+        addra % 4 == 0;
+        addrb % 4 == 0;
+    }
+
 endclass
 
 module BRAM_tb;
@@ -31,13 +36,13 @@ module BRAM_tb;
 
     BRAMInputs BRAMTest = new;
 
-    //always #10 clk = ~clk;
+    always #5 clk = ~clk;
 
     initial begin
 
         clk = 0;
 
-        $display("READ on port A")
+        $display("READ on port A");
 
         wea = 0;
         web = 0;
@@ -46,10 +51,29 @@ module BRAM_tb;
 
             BRAMTest.randomize();
             addra = BRAMTest.addra;
-            #5;
+            #10;
             $display("Address A: %0h, Data A: %0h", addra, doa);
 
         end
+
+        $display("READ on port B");
+
+        repeat (5) begin
+
+            BRAMTest.randomize();
+            addrb = BRAMTest.addrb;
+            #10;
+            $display("Address B: %0h, Data B: %0h", addrb, dob);
+
+        end
+
+
+
+
+
+
+
+        $finish;
 
     
 
