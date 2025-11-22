@@ -13,6 +13,16 @@ module RegFile (
     assign rs2_data = reg_file[rs2];
     assign rd_data = reg_file[rd];
 
+    integer i;
+
+    initial begin
+
+        for (i = 0; i < 32; i = i+1) begin
+            reg_file[i] = 0;
+        end
+
+    end
+
     always @(posedge clk) begin
 
         if (rd > 0 && RegWrite) reg_file[rd] <= rd_write_data; // ensure address written to is from 1-31 and RegWrite is HIGH

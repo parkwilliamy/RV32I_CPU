@@ -1,1 +1,0 @@
--debug "typical" "LSU_tb" -s "LSU_tb_sim" 
