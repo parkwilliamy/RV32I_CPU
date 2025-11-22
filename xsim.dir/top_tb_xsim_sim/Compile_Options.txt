@@ -1,0 +1,1 @@
+-debug "typical" "top_tb_xsim" -s "top_tb_xsim_sim" 
