@@ -31,7 +31,7 @@ module top_tb (input reg rst_n, clk);
         end
 
         $display("Loading program from %s", program_file);
-        
+
         $readmemh(program_file, DUT.BRAM.mem, 0);
 
         if (!$value$plusargs("begin_signature=%h", RVMODEL_DATA_BEGIN)) begin
