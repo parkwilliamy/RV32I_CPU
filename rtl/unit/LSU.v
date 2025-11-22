@@ -1,15 +1,16 @@
 `timescale 1ns/1ps
 
 module LSU (
-    input addrb, MemWrite, MemRead,
-    input [31:0] DMEM_word, rs2_data,
-    input [1:0] byte_offset,
+    input MemWrite, MemRead,
+    input [31:0] addrb, DMEM_word, rs2_data,
     input [2:0] funct3,
     output reg [3:0] web,
     output reg [31:0] dib, DMEM_result
 );
 
     reg [31:0] DMEM_shifted_word; // for loads
+    wire [1:0] MEM_byte_offset;
+    assign byte_offset = addrb % 4;
 
     always @ (*) begin
 

@@ -204,21 +204,17 @@ module top (
 
     assign addrb = MEM_ALU_result;
 
-    wire [1:0] MEM_byte_offset;
-    assign MEM_byte_offset = addrb % 4;
-
     wire [31:0] MEM_DMEM_word; // data at the nearest word aligned address for a given byte address
     assign MEM_DMEM_word = dob; 
 
     reg [31:0] MEM_DMEM_result; // properly formatted data for load instructions
 
     LSU INST8 (
-        .addrb(addrb),
         .MemWrite(MEM_MemWrite),
         .MemRead(MEM_MemRead),
+        .addrb(addrb),
         .DMEM_word(MEM_DMEM_word),
         .rs2_data(MEM_rs2_data),
-        .byte_offset(MEM_byte_offset),
         .funct3(MEM_funct3),
         .web(web),
         .dib(dib),

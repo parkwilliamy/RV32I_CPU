@@ -1,1 +1,0 @@
--debug "typical" "BRAM_tb" -s "BRAM_tb_sim" 
