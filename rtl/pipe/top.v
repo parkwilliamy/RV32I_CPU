@@ -37,8 +37,8 @@ module top (
     wire [31:0] IF_instruction;
     reg [31:0] IF_pc;
 
-    assign addra = IF_pc;
-    assign IF_instruction = doa;
+    assign addra = rst_n ? IF_pc : 0;
+    assign IF_instruction = rst_n ? doa : 0;
 
     // =============================== INSTRUCTION DECODE ===============================
 
@@ -243,6 +243,10 @@ module top (
 
         if (!rst_n) begin
             IF_pc <= 0;
+            IF_ID <= 0;
+            ID_EX <= 0;
+            EX_MEM <= 0;
+            MEM_WB <= 0;
         end
 
         else begin
